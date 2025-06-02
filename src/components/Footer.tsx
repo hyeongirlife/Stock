@@ -7,11 +7,11 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-bold text-gray-900 mb-4">토스증권</h3>
+            <h3 className="font-bold text-gray-900 mb-4">현걸증권</h3>
             <p className="text-sm text-gray-600">
               서울특별시 강남구 테헤란로 131
               <br />
-              토스증권 주식회사
+              현걸증권 주식회사
             </p>
           </div>
           <div>
@@ -41,7 +41,7 @@ export default function Footer() {
         </div>
         <div className="mt-8 pt-8 border-t border-gray-100">
           <p className="text-sm text-gray-500 text-center">
-            © 2024 토스증권. All rights reserved.
+            © 2024 현걸증권. All rights reserved.
           </p>
         </div>
       </div>
