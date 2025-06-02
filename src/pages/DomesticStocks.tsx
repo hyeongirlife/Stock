@@ -21,10 +21,16 @@ const kosdaqData = [
   { time: '15:00', value: 875 },
 ];
 
-const investorData = [
+const investorDataKospi = [
   { type: '외국인', value: 2534.7, isPositive: true },
   { type: '개인', value: -1256.3, isPositive: false },
   { type: '기관', value: -1278.4, isPositive: false },
+];
+
+const investorDataKosdaq = [
+  { type: '외국인', value: 534.2, isPositive: true },
+  { type: '개인', value: 856.3, isPositive: true },
+  { type: '기관', value: -1390.5, isPositive: false },
 ];
 
 const tabs = ['전체', '거래상위', '상승', '하락', '시가총액상위', '인기검색'];
@@ -42,12 +48,23 @@ const stockLists = {
     { name: '카카오', code: '035720', price: '78,900', change: '+0.9%', isPositive: true },
     { name: '기아', code: '000270', price: '112,000', change: '+1.1%', isPositive: true },
   ],
-  거래상위: [
-    { name: '삼성전자', code: '005930', price: '74,800', change: '+1.2%', isPositive: true, volume: '12,345,678' },
-    { name: 'SK하이닉스', code: '000660', price: '156,000', change: '+2.3%', isPositive: true, volume: '8,765,432' },
-    // ... (similar data for other categories)
-  ],
 };
+
+const InvestorTrends = ({ title, data }: { title: string; data: typeof investorDataKospi }) => (
+  <div className="p-4 border border-gray-100 rounded-xl">
+    <h3 className="font-medium mb-4">{title} 투자자 동향 (단위: 십억원)</h3>
+    <div className="space-y-3">
+      {data.map((investor) => (
+        <div key={investor.type} className="flex items-center justify-between">
+          <span className="text-gray-600">{investor.type}</span>
+          <span className={investor.isPositive ? 'text-red-500' : 'text-blue-500'}>
+            {investor.value > 0 ? '+' : ''}{investor.value.toLocaleString()}
+          </span>
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
 export default function DomesticStocks() {
   const [activeTab, setActiveTab] = useState(0);
@@ -102,18 +119,9 @@ export default function DomesticStocks() {
           </div>
         </div>
 
-        <div className="border-t border-gray-100 pt-6">
-          <h3 className="font-medium mb-4">투자자 동향 (단위: 십억원)</h3>
-          <div className="space-y-3">
-            {investorData.map((investor) => (
-              <div key={investor.type} className="flex items-center justify-between">
-                <span className="text-gray-600">{investor.type}</span>
-                <span className={investor.isPositive ? 'text-red-500' : 'text-blue-500'}>
-                  {investor.value > 0 ? '+' : ''}{investor.value.toLocaleString()}
-                </span>
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InvestorTrends title="KOSPI" data={investorDataKospi} />
+          <InvestorTrends title="KOSDAQ" data={investorDataKosdaq} />
         </div>
       </section>
 
