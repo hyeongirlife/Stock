@@ -23,7 +23,10 @@ export default function StockCommunity({ stockCode, market }: StockCommunityProp
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const fetchComments = async () => {
+    const initializeData = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+
       const { data: stock } = await supabase
         .from('stocks')
         .select('id')
@@ -46,9 +49,7 @@ export default function StockCommunity({ stockCode, market }: StockCommunityProp
       }
     };
 
-    const { data: { user } } = await supabase.auth.getUser();
-    setUser(user);
-    fetchComments();
+    initializeData();
   }, [stockCode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
