@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Bell, User } from 'lucide-react';
+import { Search, Bell, User, LogOut } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import AuthModal from './AuthModal';
 
 export default function Header() {
+  const [user, setUser] = useState<any>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-100 z-50">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -24,12 +41,33 @@ export default function Header() {
             <Bell className="w-5 h-5 text-gray-600" />
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
-          <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-            <User className="w-4 h-4 mr-2" />
-            로그인
-          </button>
+          
+          {user ? (
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-700">{user.email}</span>
+              <button
+                onClick={handleLogout}
+                className="p-2 hover:bg-gray-100 rounded-full"
+              >
+                <LogOut className="w-5 h-5 text-gray-600" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsAuthModalOpen(true)}
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              <User className="w-4 h-4 mr-2" />
+              로그인
+            </button>
+          )}
         </div>
       </div>
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
     </header>
   );
 }
