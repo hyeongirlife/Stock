@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+import StockCommunity from '../components/StockCommunity';
 
 const marketData = [
   { time: '09:00', value: 2640 },
@@ -68,6 +69,7 @@ const InvestorTrends = ({ title, data }: { title: string; data: typeof investorD
 
 export default function DomesticStocks() {
   const [activeTab, setActiveTab] = useState(0);
+  const [selectedStock, setSelectedStock] = useState(stockLists['전체'][0]);
 
   return (
     <div className="space-y-8">
@@ -144,7 +146,11 @@ export default function DomesticStocks() {
 
         <div className="space-y-4">
           {stockLists['전체'].map((stock) => (
-            <div key={stock.code} className="p-4 border border-gray-100 rounded-xl hover:border-blue-200 transition-colors">
+            <div
+              key={stock.code}
+              className="p-4 border border-gray-100 rounded-xl hover:border-blue-200 transition-colors cursor-pointer"
+              onClick={() => setSelectedStock(stock)}
+            >
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="font-medium">{stock.name}</h3>
@@ -161,6 +167,13 @@ export default function DomesticStocks() {
           ))}
         </div>
       </section>
+
+      {selectedStock && (
+        <StockCommunity
+          stockCode={selectedStock.code}
+          market="domestic"
+        />
+      )}
     </div>
   );
 }
